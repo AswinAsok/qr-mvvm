@@ -448,12 +448,19 @@ class RecentScans extends StatelessWidget {
                                   );
                                 },
                               ),
+                              IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  viewModel.removeScanResult(index);
+                                },
+                              ),
                             ],
                           ),
                           subtitle: Text(
-                            DateFormat('yyyy-MM-dd – hh:mm a')
+                            DateFormat('d MMM, yyyy - hh:mm a')
                                 .format(scan.createdAt),
-                            style: TextStyle(color: Colors.grey[600]),
+                            style: TextStyle(
+                                color: Colors.grey[600], fontSize: 12),
                           ),
                         );
                       },

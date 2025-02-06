@@ -46,4 +46,9 @@ class ScannerViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void removeScanResult(int index) {
+    _recentScans.removeAt(index);
+    notifyListeners();
+  }
 }
