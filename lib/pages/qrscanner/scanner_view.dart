@@ -73,7 +73,7 @@ class GenerateButton extends StatelessWidget {
               Text(
                 "Generate QR",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 17,
                   fontWeight: FontWeight.w600,
                 ),
               ),

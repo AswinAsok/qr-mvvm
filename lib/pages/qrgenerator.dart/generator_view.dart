@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:qrmvvm/pages/qrscanner/scanner_view.dart';
 import 'generator_view_model.dart';
 import 'package:intl/intl.dart';
 
@@ -61,7 +62,7 @@ class GeneratorView extends StatelessWidget {
                           SizedBox(height: 20),
                           Center(
                             child: Container(
-                              padding: EdgeInsets.all(15),
+                              padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10),
@@ -69,7 +70,7 @@ class GeneratorView extends StatelessWidget {
                               child: QrImageView(
                                 data: viewModel.qrData,
                                 version: QrVersions.auto,
-                                size: 200.0,
+                                size: 175.0,
                                 backgroundColor: Colors.white,
                               ),
                             ),
@@ -78,6 +79,64 @@ class GeneratorView extends StatelessWidget {
                       ],
                     ),
                   ),
+                  SizedBox(height: 20),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    decoration: BoxDecoration(
+                        color: Color(0xfffdfdfd),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.12),
+                            spreadRadius: 10,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          )
+                        ]),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.qr_code,
+                              color: Color(0xFF212023),
+                              size: 24,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              "Scan QR",
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Color(0xFF212023),
+                            backgroundColor: Color(0xFFEBFF57),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ScannerView(),
+                              ),
+                            );
+                          },
+                          label: Text("Scan Now",
+                              style: TextStyle(
+                                  color: Color(0xFF212023),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20),
                   Expanded(
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 10),
@@ -105,8 +164,8 @@ class GeneratorView extends StatelessWidget {
                             children: [
                               Text(
                                 viewModel.generatedQRCodes.isNotEmpty
-                                    ? "Generated QR Codes (${viewModel.generatedQRCodes.length})"
-                                    : "Generated QR Codes",
+                                    ? "Generated QRs  (${viewModel.generatedQRCodes.length})"
+                                    : "Generated QRs",
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
