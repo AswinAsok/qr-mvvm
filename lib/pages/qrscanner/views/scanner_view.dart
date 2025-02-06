@@ -27,7 +27,6 @@ class ScannerView extends StatelessWidget {
                     SizedBox(height: 20),
                     GenerateButton(),
                     SizedBox(height: 20),
-                    SearchBar(viewModel: viewModel),
                     RecentScans(viewModel: viewModel), // Uncommented this line
                   ],
                 ),
@@ -280,7 +279,6 @@ class Scanner extends StatelessWidget {
                                       final String result =
                                           capture.barcodes.first.rawValue ?? '';
                                       viewModel.addScanResult(result);
-                                      viewModel.toggleScannerVisibility();
                                     },
                                   ),
                                 ),
@@ -341,7 +339,23 @@ class RecentScans extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10),
         padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.12),
+              spreadRadius: 10,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            )
+          ],
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -356,67 +370,49 @@ class RecentScans extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final scan = viewModel.recentScans[index];
                   return ListTile(
-                    title: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          Text(
-                            scan.result,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              scan.result,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          SizedBox(width: 10),
-                          IconButton(
-                            icon: Icon(Icons.copy),
-                            onPressed: () {
-                              Clipboard.setData(
-                                  ClipboardData(text: scan.result));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Copied to clipboard')),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.copy),
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: scan.result));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Copied to clipboard')),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                    subtitle: Text(DateFormat('yyyy-MM-dd – kk:mm')
-                        .format(scan.createdAt)),
+                    subtitle: Text(
+                      DateFormat('yyyy-MM-dd – hh:mm a').format(scan.createdAt),
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
                   );
                 },
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class SearchBar extends StatelessWidget {
-  const SearchBar({
-    super.key,
-    required this.viewModel,
-  });
-
-  final ScannerViewModel viewModel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: TextField(
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.search),
-          labelText: 'Search',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        onChanged: (query) {
-          viewModel.searchScans(query);
-        },
       ),
     );
   }

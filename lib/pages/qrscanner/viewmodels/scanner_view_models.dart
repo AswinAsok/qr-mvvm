@@ -6,7 +6,8 @@ class ScannerViewModel extends ChangeNotifier {
   List<ScanResult> _filteredScans = [];
 
   bool get isScannerVisible => _isScannerVisible;
-  List<ScanResult> get recentScans => _filteredScans.isEmpty ? _recentScans : _filteredScans;
+  List<ScanResult> get recentScans =>
+      _filteredScans.isEmpty ? _recentScans : _filteredScans;
 
   ScannerViewModel() {
     _filteredScans = _recentScans;
@@ -28,7 +29,8 @@ class ScannerViewModel extends ChangeNotifier {
       _filteredScans = _recentScans;
     } else {
       _filteredScans = _recentScans
-          .where((scan) => scan.result.toLowerCase().contains(query.toLowerCase()))
+          .where(
+              (scan) => scan.result.toLowerCase().contains(query.toLowerCase()))
           .toList();
     }
     notifyListeners();
