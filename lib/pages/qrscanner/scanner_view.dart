@@ -305,11 +305,12 @@ class Scanner extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(20),
               child: Text(
-                "Place a QR code inside the frame to scan it",
+                "Just place a QR code inside the frame and press above. It's not that hard :)",
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),
