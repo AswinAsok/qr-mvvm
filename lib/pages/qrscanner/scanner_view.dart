@@ -348,57 +348,96 @@ class RecentScans extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Recent Scans (${viewModel.recentScans.length})",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  viewModel.recentScans.isNotEmpty
+                      ? "Recent Scans (${viewModel.recentScans.length})"
+                      : "Recent Scans",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                if (viewModel.recentScans.isNotEmpty) ...[
+                  ElevatedButton(
+                    onPressed: () {
+                      viewModel.clearScans();
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(186, 33, 32, 35),
+                        foregroundColor: Colors.white),
+                    child: Text(
+                      "Clear All",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
             SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: viewModel.recentScans.length,
-                itemBuilder: (context, index) {
-                  final scan = viewModel.recentScans[index];
-                  return ListTile(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-                    title: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              scan.result,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+              child: viewModel.recentScans.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: viewModel.recentScans.length,
+                      itemBuilder: (context, index) {
+                        final scan = viewModel.recentScans[index];
+                        return ListTile(
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                          title: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 15),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    scan.result,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                              IconButton(
+                                icon: Icon(Icons.copy),
+                                onPressed: () {
+                                  Clipboard.setData(
+                                      ClipboardData(text: scan.result));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text('Copied to clipboard')),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
+                          subtitle: Text(
+                            DateFormat('yyyy-MM-dd – hh:mm a')
+                                .format(scan.createdAt),
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                        );
+                      },
+                    )
+                  : Center(
+                      child: Text(
+                        "Wow, such emptiness.\n Maybe try scanning a QR code?",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF212023),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.copy),
-                          onPressed: () {
-                            Clipboard.setData(ClipboardData(text: scan.result));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Copied to clipboard')),
-                            );
-                          },
-                        ),
-                      ],
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    subtitle: Text(
-                      DateFormat('yyyy-MM-dd – hh:mm a').format(scan.createdAt),
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                  );
-                },
-              ),
             ),
           ],
         ),

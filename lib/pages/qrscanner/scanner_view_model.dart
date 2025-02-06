@@ -25,6 +25,12 @@ class ScannerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearScans() {
+    _recentScans.clear();
+    _filteredScans.clear();
+    notifyListeners();
+  }
+
   void searchScans(String query) {
     if (query.isEmpty) {
       _filteredScans = _recentScans;
