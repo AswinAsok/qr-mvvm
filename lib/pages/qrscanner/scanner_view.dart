@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
+import 'package:qrmvvm/pages/qrgenerator.dart/generator_view.dart';
 import 'package:qrmvvm/pages/qrscanner/scanner_view_model.dart';
 import 'package:qrmvvm/pages/qrscanner/qr_scanner_corner.dart';
 import 'package:flutter/services.dart';
@@ -84,7 +85,12 @@ class GenerateButton extends StatelessWidget {
               backgroundColor: Color(0xFFEBFF57),
             ),
             onPressed: () {
-              // Add your QR generation logic here
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GeneratorView(),
+                ),
+              );
             },
             label: Text("Generate",
                 style: TextStyle(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qrmvvm/pages/home/views/home_view.dart';
+import 'package:qrmvvm/pages/home/home_view.dart';
 
 void main() {
   runApp(MyApp());
