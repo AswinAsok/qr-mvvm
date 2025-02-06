@@ -291,29 +291,42 @@ class _ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                           ),
                           Center(
                             child: widget.viewModel.isScannerVisible
-                                ? SizedBox(
-                                    width: 175,
-                                    height: 175,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: MobileScanner(
-                                        onDetect: (capture) {
-                                          final String result =
-                                              capture.barcodes.first.rawValue ??
+                                ? Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 175,
+                                        height: 175,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: MobileScanner(
+                                            onDetect: (capture) {
+                                              final String result = capture
+                                                      .barcodes
+                                                      .first
+                                                      .rawValue ??
                                                   '';
-                                          widget.viewModel
-                                              .addScanResult(result);
-                                        },
+                                              widget.viewModel
+                                                  .addScanResult(result);
+                                            },
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      Lottie.asset(
+                                        'assets/sparkles.json',
+                                        width: 200,
+                                        height: 200,
+                                      ),
+                                    ],
                                   )
                                 : Stack(
                                     alignment: Alignment.center,
                                     children: [
                                       Lottie.asset(
                                         'assets/sparkles.json',
-                                        width: 1000,
-                                        height: 1000,
+                                        width: 200,
+                                        height: 200,
                                       ),
                                       Positioned(
                                         bottom: 40,
@@ -326,12 +339,15 @@ class _ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                                               size: 40,
                                             ),
                                             SizedBox(height: 8),
-                                            Text(
-                                              "Tap to Scan",
-                                              style: TextStyle(
-                                                color: Color(0xFFEBFF57),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
+                                            FadeTransition(
+                                              opacity: _animation,
+                                              child: Text(
+                                                "Tap to Scan",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
                                             ),
                                           ],
