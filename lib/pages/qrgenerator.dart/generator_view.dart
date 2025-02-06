@@ -61,18 +61,62 @@ class GeneratorView extends StatelessWidget {
                         if (viewModel.qrData.isNotEmpty) ...[
                           SizedBox(height: 20),
                           Center(
-                            child: Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: QrImageView(
-                                data: viewModel.qrData,
-                                version: QrVersions.auto,
-                                size: 175.0,
-                                backgroundColor: Colors.white,
-                              ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: QrImageView(
+                                    data: viewModel.qrData,
+                                    version: QrVersions.auto,
+                                    size: 150.0,
+                                    backgroundColor: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFFEBFF57),
+                                        foregroundColor: Colors.black,
+                                      ),
+                                      onPressed: () {
+                                        // Implement copy to clipboard functionality
+                                      },
+                                      icon:
+                                          Icon(Icons.copy, color: Colors.black),
+                                      label: Text(
+                                        'Copy',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFFEBFF57),
+                                        foregroundColor: Colors.black,
+                                      ),
+                                      onPressed: () {
+                                        // Implement download functionality
+                                      },
+                                      icon: Icon(Icons.download,
+                                          color: Colors.black),
+                                      label: Text(
+                                        'Download',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -164,7 +208,7 @@ class GeneratorView extends StatelessWidget {
                             children: [
                               Text(
                                 viewModel.generatedQRCodes.isNotEmpty
-                                    ? "Generated QRs  (${viewModel.generatedQRCodes.length})"
+                                    ? "Generated QRs (${viewModel.generatedQRCodes.length})"
                                     : "Generated QRs",
                                 style: TextStyle(
                                   fontSize: 18,
