@@ -7,8 +7,12 @@ class ScannerViewModel extends ChangeNotifier {
   List<ScanResult> _filteredScans = [];
 
   bool get isScannerVisible => _isScannerVisible;
-  List<ScanResult> get recentScans =>
-      _filteredScans.isEmpty ? _recentScans : _filteredScans;
+  List<ScanResult> get recentScans {
+    List<ScanResult> scans =
+        _filteredScans.isEmpty ? _recentScans : _filteredScans;
+    scans.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return scans;
+  }
 
   ScannerViewModel() {
     _filteredScans = _recentScans;

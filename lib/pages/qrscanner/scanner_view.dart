@@ -191,10 +191,37 @@ class ScanInfo extends StatelessWidget {
   }
 }
 
-class Scanner extends StatelessWidget {
+class Scanner extends StatefulWidget {
   const Scanner({super.key, required this.viewModel});
 
   final ScannerViewModel viewModel;
+
+  @override
+  _ScannerState createState() => _ScannerState();
+}
+
+class _ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +259,7 @@ class Scanner extends StatelessWidget {
                 ),
                 child: GestureDetector(
                   onTap: () {
-                    viewModel.toggleScannerVisibility();
+                    widget.viewModel.toggleScannerVisibility();
                   },
                   child: Stack(
                     children: [
@@ -260,7 +287,7 @@ class Scanner extends StatelessWidget {
                         ),
                       ),
                       Center(
-                        child: viewModel.isScannerVisible
+                        child: widget.viewModel.isScannerVisible
                             ? SizedBox(
                                 width: 175,
                                 height: 175,
@@ -270,7 +297,7 @@ class Scanner extends StatelessWidget {
                                     onDetect: (capture) {
                                       final String result =
                                           capture.barcodes.first.rawValue ?? '';
-                                      viewModel.addScanResult(result);
+                                      widget.viewModel.addScanResult(result);
                                     },
                                   ),
                                 ),
@@ -284,12 +311,15 @@ class Scanner extends StatelessWidget {
                                     size: 40,
                                   ),
                                   SizedBox(height: 8),
-                                  Text(
-                                    "Tap to Scan",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
+                                  FadeTransition(
+                                    opacity: _animation,
+                                    child: Text(
+                                      "Tap to Scan",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                 ],
