@@ -3,6 +3,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:qrmvvm/pages/qrscanner/viewmodels/scanner_view_models.dart';
 import 'package:qrmvvm/pages/qrscanner/widgets/qr_scanner_corner.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class ScannerView extends StatelessWidget {
   const ScannerView({super.key});
@@ -13,26 +15,26 @@ class ScannerView extends StatelessWidget {
       create: (_) => ScannerViewModel(),
       child: Consumer<ScannerViewModel>(builder: (context, viewModel, child) {
         return Scaffold(
-            body: SingleChildScrollView(
-          child: Column(
+          body: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Scanner(viewModel: viewModel),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  GenerateButton(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                ],
-              )
+              Expanded(
+                // Wrap the inner Column with Expanded
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Scanner(viewModel: viewModel),
+                    SizedBox(height: 20),
+                    GenerateButton(),
+                    SizedBox(height: 20),
+                    SearchBar(viewModel: viewModel),
+                    RecentScans(viewModel: viewModel), // Uncommented this line
+                  ],
+                ),
+              ),
             ],
           ),
-        ));
+        );
       }),
     );
   }
@@ -182,9 +184,7 @@ class ScanInfo extends StatelessWidget {
                     foregroundColor: Colors.white,
                     backgroundColor: Color(0xFF212023),
                   ),
-                  onPressed: () {
-                    print("Share data");
-                  },
+                  onPressed: () {},
                   icon: Icon(Icons.share, color: Colors.white),
                   label: Text("Share", style: TextStyle(color: Colors.white)),
                 ),
@@ -276,7 +276,12 @@ class Scanner extends StatelessWidget {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: MobileScanner(
-                                    onDetect: (capture) {},
+                                    onDetect: (capture) {
+                                      final String result =
+                                          capture.barcodes.first.rawValue ?? '';
+                                      viewModel.addScanResult(result);
+                                      viewModel.toggleScannerVisibility();
+                                    },
                                   ),
                                 ),
                               )
@@ -319,6 +324,99 @@ class Scanner extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class RecentScans extends StatelessWidget {
+  const RecentScans({
+    super.key,
+    required this.viewModel,
+  });
+
+  final ScannerViewModel viewModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Recent Scans (${viewModel.recentScans.length})",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: viewModel.recentScans.length,
+                itemBuilder: (context, index) {
+                  final scan = viewModel.recentScans[index];
+                  return ListTile(
+                    title: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          Text(
+                            scan.result,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          IconButton(
+                            icon: Icon(Icons.copy),
+                            onPressed: () {
+                              Clipboard.setData(
+                                  ClipboardData(text: scan.result));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Copied to clipboard')),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    subtitle: Text(DateFormat('yyyy-MM-dd – kk:mm')
+                        .format(scan.createdAt)),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SearchBar extends StatelessWidget {
+  const SearchBar({
+    super.key,
+    required this.viewModel,
+  });
+
+  final ScannerViewModel viewModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: TextField(
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.search),
+          labelText: 'Search',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        onChanged: (query) {
+          viewModel.searchScans(query);
+        },
       ),
     );
   }
