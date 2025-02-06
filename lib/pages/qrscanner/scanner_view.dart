@@ -5,6 +5,7 @@ import 'package:qrmvvm/pages/qrscanner/scanner_view_model.dart';
 import 'package:qrmvvm/pages/qrscanner/qr_scanner_corner.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 class ScannerView extends StatelessWidget {
   const ScannerView({super.key});
@@ -244,95 +245,111 @@ class _ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
             )
           ]),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Center(
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.transparent,
-                    width: 3,
-                  ),
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    widget.viewModel.toggleScannerVisibility();
-                  },
-                  child: Stack(
-                    children: [
-                      QRScannerCorner(),
-                      Positioned(
-                        right: 0,
-                        child: Transform.rotate(
-                          angle: Math.pi / 2,
-                          child: QRScannerCorner(),
-                        ),
+              child: Stack(
+                children: [
+                  Container(
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.transparent,
+                        width: 3,
                       ),
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: Transform.rotate(
-                          angle: Math.pi,
-                          child: QRScannerCorner(),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        child: Transform.rotate(
-                          angle: -Math.pi / 2,
-                          child: QRScannerCorner(),
-                        ),
-                      ),
-                      Center(
-                        child: widget.viewModel.isScannerVisible
-                            ? SizedBox(
-                                width: 175,
-                                height: 175,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: MobileScanner(
-                                    onDetect: (capture) {
-                                      final String result =
-                                          capture.barcodes.first.rawValue ?? '';
-                                      widget.viewModel.addScanResult(result);
-                                    },
-                                  ),
-                                ),
-                              )
-                            : Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.touch_app_outlined,
-                                    color: Colors.white,
-                                    size: 40,
-                                  ),
-                                  SizedBox(height: 8),
-                                  FadeTransition(
-                                    opacity: _animation,
-                                    child: Text(
-                                      "Tap to Scan",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        widget.viewModel.toggleScannerVisibility();
+                      },
+                      child: Stack(
+                        children: [
+                          QRScannerCorner(),
+                          Positioned(
+                            right: 0,
+                            child: Transform.rotate(
+                              angle: Math.pi / 2,
+                              child: QRScannerCorner(),
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            bottom: 0,
+                            child: Transform.rotate(
+                              angle: Math.pi,
+                              child: QRScannerCorner(),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            child: Transform.rotate(
+                              angle: -Math.pi / 2,
+                              child: QRScannerCorner(),
+                            ),
+                          ),
+                          Center(
+                            child: widget.viewModel.isScannerVisible
+                                ? SizedBox(
+                                    width: 175,
+                                    height: 175,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: MobileScanner(
+                                        onDetect: (capture) {
+                                          final String result =
+                                              capture.barcodes.first.rawValue ??
+                                                  '';
+                                          widget.viewModel
+                                              .addScanResult(result);
+                                        },
                                       ),
                                     ),
+                                  )
+                                : Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Lottie.asset(
+                                        'assets/sparkles.json',
+                                        width: 1000,
+                                        height: 1000,
+                                      ),
+                                      Positioned(
+                                        bottom: 40,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.touch_app_outlined,
+                                              color: Colors.white,
+                                              size: 40,
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              "Tap to Scan",
+                                              style: TextStyle(
+                                                color: Color(0xFFEBFF57),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
           Center(
-            child: Container(
+            child: Padding(
               padding: EdgeInsets.all(20),
               child: Text(
                 "Just place a QR code inside the frame and press above. It's not that hard :)",
@@ -420,20 +437,23 @@ class RecentScans extends StatelessWidget {
                           title: Row(
                             children: [
                               Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 15),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[100],
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Text(
-                                    scan.result,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 15),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[100],
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    overflow: TextOverflow.ellipsis,
+                                    child: Text(
+                                      scan.result,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ),
                               ),

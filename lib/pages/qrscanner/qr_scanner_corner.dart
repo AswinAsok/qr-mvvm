@@ -11,8 +11,8 @@ class QRScannerCorner extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.transparent,
         border: Border(
-          left: BorderSide(width: 3, color: Colors.white),
-          top: BorderSide(width: 3, color: Colors.white),
+          left: BorderSide(width: 3, color: Color(0xFFEBFF57)),
+          top: BorderSide(width: 3, color: Color(0xFFEBFF57)),
         ),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),

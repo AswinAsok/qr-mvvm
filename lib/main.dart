@@ -23,14 +23,6 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Satoshi',
       ),
       home: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // Add your onPressed code here!
-          },
-          foregroundColor: Color(0xFF212023),
-          backgroundColor: Color(0xFFEBFF57),
-          child: const Icon(Icons.qr_code_scanner),
-        ),
         appBar: AppBar(
           toolbarHeight: 80.0, // Increase the height of the AppBar
           title: Container(
