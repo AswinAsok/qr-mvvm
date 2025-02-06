@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
-import 'package:qrmvvm/pages/qrscanner/viewmodels/scanner_view_model.dart';
-import 'package:qrmvvm/pages/qrscanner/widgets/qr_scanner_corner.dart';
+import 'package:qrmvvm/pages/qrscanner/scanner_view_model.dart';
+import 'package:qrmvvm/pages/qrscanner/qr_scanner_corner.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
