@@ -24,7 +24,10 @@ class ScannerView extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
-                  GenerateButton()
+                  GenerateButton(),
+                  SizedBox(
+                    height: 20,
+                  ),
                 ],
               )
             ],
