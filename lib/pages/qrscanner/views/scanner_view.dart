@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
-import 'package:qrmvvm/pages/qrscanner/viewmodels/scanner_view_models.dart';
+import 'package:qrmvvm/pages/qrscanner/viewmodels/scanner_view_model.dart';
 import 'package:qrmvvm/pages/qrscanner/widgets/qr_scanner_corner.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +19,6 @@ class ScannerView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Expanded(
-                // Wrap the inner Column with Expanded
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -27,7 +26,7 @@ class ScannerView extends StatelessWidget {
                     SizedBox(height: 20),
                     GenerateButton(),
                     SizedBox(height: 20),
-                    RecentScans(viewModel: viewModel), // Uncommented this line
+                    RecentScans(viewModel: viewModel),
                   ],
                 ),
               ),
@@ -40,9 +39,7 @@ class ScannerView extends StatelessWidget {
 }
 
 class GenerateButton extends StatelessWidget {
-  const GenerateButton({
-    super.key,
-  });
+  const GenerateButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -101,9 +98,7 @@ class GenerateButton extends StatelessWidget {
 }
 
 class ScanInfo extends StatelessWidget {
-  const ScanInfo({
-    super.key,
-  });
+  const ScanInfo({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -197,10 +192,7 @@ class ScanInfo extends StatelessWidget {
 }
 
 class Scanner extends StatelessWidget {
-  const Scanner({
-    super.key,
-    required this.viewModel,
-  });
+  const Scanner({super.key, required this.viewModel});
 
   final ScannerViewModel viewModel;
 
@@ -328,10 +320,7 @@ class Scanner extends StatelessWidget {
 }
 
 class RecentScans extends StatelessWidget {
-  const RecentScans({
-    super.key,
-    required this.viewModel,
-  });
+  const RecentScans({super.key, required this.viewModel});
 
   final ScannerViewModel viewModel;
 

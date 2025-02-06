@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qrmvvm/pages/qrscanner/models/scan_result.dart';
 
 class ScannerViewModel extends ChangeNotifier {
   bool _isScannerVisible = false;
@@ -35,11 +36,4 @@ class ScannerViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
-}
-
-class ScanResult {
-  final String result;
-  final DateTime createdAt;
-
-  ScanResult({required this.result, required this.createdAt});
 }
