@@ -383,6 +383,71 @@ class _ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
   }
 }
 
+void _showConfirmationDialog(
+    BuildContext context, String message, VoidCallback onConfirm) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Confirm Deletion",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              message,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(186, 33, 32, 35),
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text(
+                    "Confirm",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onConfirm();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Color(0xFF212023),
+                    backgroundColor: Color(0xFFEBFF57),
+                  ),
+                  child: Text(
+                    "Confirm",
+                    style: TextStyle(
+                      color: Color(0xFF212023),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 class RecentScans extends StatelessWidget {
   const RecentScans({super.key, required this.viewModel});
 
@@ -424,7 +489,13 @@ class RecentScans extends StatelessWidget {
                 if (viewModel.recentScans.isNotEmpty) ...[
                   ElevatedButton(
                     onPressed: () {
-                      viewModel.clearScans();
+                      _showConfirmationDialog(
+                        context,
+                        "Are you sure you want to clear all scans?",
+                        () {
+                          viewModel.clearScans();
+                        },
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(186, 33, 32, 35),
@@ -451,6 +522,9 @@ class RecentScans extends StatelessWidget {
                           contentPadding:
                               EdgeInsets.symmetric(vertical: 5, horizontal: 0),
                           title: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            spacing: 5,
                             children: [
                               Expanded(
                                 child: SingleChildScrollView(
@@ -473,22 +547,34 @@ class RecentScans extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.copy),
-                                onPressed: () {
-                                  Clipboard.setData(
-                                      ClipboardData(text: scan.result));
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text('Copied to clipboard')),
-                                  );
-                                },
+                              SizedBox(
+                                width: 24,
+                                child: IconButton(
+                                  icon: Icon(Icons.copy),
+                                  onPressed: () {
+                                    Clipboard.setData(
+                                        ClipboardData(text: scan.result));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text('Copied to clipboard')),
+                                    );
+                                  },
+                                ),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed: () {
-                                  viewModel.removeScanResult(index);
-                                },
+                              SizedBox(
+                                width: 24,
+                                child: IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    _showConfirmationDialog(
+                                      context,
+                                      "Are you sure you want to delete this scan?",
+                                      () {
+                                        viewModel.removeScanResult(index);
+                                      },
+                                    );
+                                  },
+                                ),
                               ),
                             ],
                           ),
