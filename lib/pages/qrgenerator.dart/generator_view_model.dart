@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class GeneratorViewModel extends ChangeNotifier {
   final TextEditingController textController = TextEditingController();
@@ -9,7 +10,14 @@ class GeneratorViewModel extends ChangeNotifier {
     qrData = textController.text;
     if (qrData.isNotEmpty) {
       generatedQRCodes.add(qrData);
+      textController.clear(); // Clear the input field
       notifyListeners();
+    }
+  }
+
+  Future<void> copyToClipboard() async {
+    if (qrData.isNotEmpty) {
+      await Clipboard.setData(ClipboardData(text: qrData));
     }
   }
 

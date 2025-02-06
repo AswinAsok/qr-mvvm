@@ -1,15 +1,83 @@
+import 'dart:ui';
+
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qrmvvm/pages/qrscanner/scanner_view.dart';
 import 'generator_view_model.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class GeneratorView extends StatelessWidget {
   const GeneratorView({super.key});
 
+  Future<void> _requestStoragePermission() async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+  }
+
+  Future<void> _downloadQRCode(
+      GlobalKey globalKey, BuildContext context) async {
+    try {
+      // Request storage permission first
+      await _requestStoragePermission();
+
+      // Capture the QR code image
+      RenderRepaintBoundary boundary =
+          globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      var image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
+
+      if (byteData == null) {
+        Fluttertoast.showToast(msg: "Failed to generate image data.");
+        return;
+      }
+
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+
+      // Get the downloads directory
+      Directory? directory;
+      if (Platform.isAndroid) {
+        directory = Directory('/storage/emulated/0/Download');
+        // Create directory if it doesn't exist
+        if (!await directory.exists()) {
+          directory = await getExternalStorageDirectory();
+        }
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      if (directory == null) {
+        Fluttertoast.showToast(msg: "Cannot access storage directory.");
+        return;
+      }
+
+      // Generate unique filename
+      String fileName = 'qr_code_${DateTime.now().millisecondsSinceEpoch}.png';
+      String filePath = '${directory.path}/$fileName';
+
+      // Save the file
+      File imgFile = File(filePath);
+      await imgFile.writeAsBytes(pngBytes);
+
+      Fluttertoast.showToast(msg: "QR Code saved to Downloads folder!");
+    } catch (e) {
+      print("Error saving QR code: $e");
+      Fluttertoast.showToast(msg: "Failed to save QR Code: ${e.toString()}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final GlobalKey globalKey = GlobalKey();
     return ChangeNotifierProvider(
       create: (_) => GeneratorViewModel(),
       child: Consumer<GeneratorViewModel>(builder: (context, viewModel, child) {
@@ -69,11 +137,14 @@ class GeneratorView extends StatelessWidget {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: QrImageView(
-                                    data: viewModel.qrData,
-                                    version: QrVersions.auto,
-                                    size: 150.0,
-                                    backgroundColor: Colors.white,
+                                  child: RepaintBoundary(
+                                    key: globalKey,
+                                    child: QrImageView(
+                                      data: viewModel.qrData,
+                                      version: QrVersions.auto,
+                                      size: 150.0,
+                                      backgroundColor: Colors.white,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(height: 10),
@@ -86,8 +157,11 @@ class GeneratorView extends StatelessWidget {
                                         backgroundColor: Color(0xFFEBFF57),
                                         foregroundColor: Colors.black,
                                       ),
-                                      onPressed: () {
-                                        // Implement copy to clipboard functionality
+                                      onPressed: () async {
+                                        await viewModel.copyToClipboard();
+                                        Fluttertoast.showToast(
+                                            msg:
+                                                "QR Code copied to clipboard!");
                                       },
                                       icon:
                                           Icon(Icons.copy, color: Colors.black),
@@ -103,8 +177,18 @@ class GeneratorView extends StatelessWidget {
                                         backgroundColor: Color(0xFFEBFF57),
                                         foregroundColor: Colors.black,
                                       ),
-                                      onPressed: () {
-                                        // Implement download functionality
+                                      onPressed: () async {
+                                        try {
+                                          await Clipboard.setData(ClipboardData(
+                                              text: viewModel.qrData));
+                                          Fluttertoast.showToast(
+                                              msg:
+                                                  "QR Code data copied to clipboard!");
+                                        } catch (e) {
+                                          Fluttertoast.showToast(
+                                              msg:
+                                                  "Failed to copy: ${e.toString()}");
+                                        }
                                       },
                                       icon: Icon(Icons.download,
                                           color: Colors.black),
@@ -363,7 +447,7 @@ class GeneratorView extends StatelessWidget {
                             foregroundColor: Color(0xFF212023),
                           ),
                           onPressed: () => viewModel.generateQRCode(),
-                          icon: Icon(Icons.qr_code),
+                          icon: Icon(Icons.qr_code, color: Colors.black),
                           label: Text(
                             'Generate',
                             style: TextStyle(fontWeight: FontWeight.bold),
