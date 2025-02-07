@@ -12,6 +12,65 @@ import 'package:go_router/go_router.dart';
 class GeneratorView extends StatelessWidget {
   const GeneratorView({super.key});
 
+  void _showConfirmationModal(
+      BuildContext context, String action, VoidCallback onConfirm) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Confirm Deletion?",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              Text('Are you sure you want to $action?'),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(186, 33, 32, 35),
+                        foregroundColor: Colors.white,
+                      ),
+                      child: Text('Cancel'),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        onConfirm();
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Color(0xFF212023),
+                        backgroundColor: Color(0xFFEBFF57),
+                      ),
+                      child: Text(
+                        "Confirm",
+                        style: TextStyle(
+                          color: Color(0xFF212023),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey globalKey = GlobalKey();
@@ -135,26 +194,6 @@ class GeneratorView extends StatelessWidget {
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                    SizedBox(width: 10),
-                                    ElevatedButton.icon(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Color(0xFFEBFF57),
-                                        foregroundColor: Colors.black,
-                                      ),
-                                      onPressed: () async {
-                                        await viewModel
-                                            .saveQRCode(viewModel.qrData);
-                                        Fluttertoast.showToast(
-                                            msg: "QR Code saved!");
-                                      },
-                                      icon:
-                                          Icon(Icons.save, color: Colors.black),
-                                      label: Text(
-                                        'Save',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ],
@@ -185,7 +224,7 @@ class GeneratorView extends StatelessWidget {
                         Row(
                           children: [
                             Icon(
-                              Icons.qr_code,
+                              Icons.qr_code_scanner_rounded,
                               color: Color(0xFF212023),
                               size: 24,
                             ),
@@ -253,7 +292,14 @@ class GeneratorView extends StatelessWidget {
                               ),
                               if (viewModel.generatedQRCodes.isNotEmpty)
                                 ElevatedButton(
-                                  onPressed: () => viewModel.clearQRCodes(),
+                                  onPressed: () {
+                                    _showConfirmationModal(context, 'clear all',
+                                        () {
+                                      viewModel.clearQRCodes();
+                                      Fluttertoast.showToast(
+                                          msg: "All QR Codes cleared!");
+                                    });
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor:
                                         Color.fromARGB(186, 33, 32, 35),
@@ -306,18 +352,24 @@ class GeneratorView extends StatelessWidget {
                                                   child: Text(
                                                     qrData,
                                                     style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.black45),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                             IconButton(
                                               icon: Icon(Icons.delete),
-                                              onPressed: () =>
-                                                  viewModel.removeQRCode(index),
+                                              onPressed: () {
+                                                _showConfirmationModal(
+                                                    context, 'delete', () {
+                                                  viewModel.removeQRCode(index);
+                                                  Fluttertoast.showToast(
+                                                      msg: "QR Code deleted!");
+                                                });
+                                              },
                                             ),
                                           ],
                                         ),
@@ -371,10 +423,10 @@ class GeneratorView extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.12),
-                          spreadRadius: 10,
-                          blurRadius: 5,
-                          offset: Offset(0, -3),
+                          color: Colors.black.withOpacity(0.05),
+                          spreadRadius: 0,
+                          blurRadius: 100,
+                          offset: Offset(0, -5),
                         ),
                       ],
                     ),

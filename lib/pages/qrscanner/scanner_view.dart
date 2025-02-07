@@ -429,38 +429,42 @@ void _showConfirmationDialog(
             ),
             SizedBox(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(186, 33, 32, 35),
-                    foregroundColor: Colors.white,
-                  ),
-                  child: Text(
-                    "Confirm",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(186, 33, 32, 35),
+                      foregroundColor: Colors.white,
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    onConfirm();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Color(0xFF212023),
-                    backgroundColor: Color(0xFFEBFF57),
-                  ),
-                  child: Text(
-                    "Confirm",
-                    style: TextStyle(
-                      color: Color(0xFF212023),
-                      fontWeight: FontWeight.w600,
+                SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      onConfirm();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Color(0xFF212023),
+                      backgroundColor: Color(0xFFEBFF57),
+                    ),
+                    child: Text(
+                      "Confirm",
+                      style: TextStyle(
+                        color: Color(0xFF212023),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
