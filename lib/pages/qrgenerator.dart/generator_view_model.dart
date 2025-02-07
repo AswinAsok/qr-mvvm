@@ -51,6 +51,11 @@ class GeneratorViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setQRData(int index) {
+    qrData = generatedQRCodes[index];
+    notifyListeners();
+  }
+
   Future<void> saveQRCode(String qrData) async {
     await _qrBox.add(qrData);
     generatedQRCodes.add(qrData);

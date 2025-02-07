@@ -145,56 +145,25 @@ class GeneratorView extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ElevatedButton.icon(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Color(0xFFEBFF57),
-                                        foregroundColor: Colors.black,
+                                Expanded(
+                                  child: Container(
+                                      margin: EdgeInsets.only(bottom: 10),
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 10, 10, 10),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white10,
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      onPressed: () async {
-                                        await viewModel.copyToClipboard();
-                                        Fluttertoast.showToast(
-                                            msg:
-                                                "QR Code copied to clipboard!");
-                                      },
-                                      icon:
-                                          Icon(Icons.copy, color: Colors.black),
-                                      label: Text(
-                                        'Copy',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    ElevatedButton.icon(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Color(0xFFEBFF57),
-                                        foregroundColor: Colors.black,
-                                      ),
-                                      onPressed: () async {
-                                        try {
-                                          await Clipboard.setData(ClipboardData(
-                                              text: viewModel.qrData));
-                                          Fluttertoast.showToast(
-                                              msg:
-                                                  "QR Code data copied to clipboard!");
-                                        } catch (e) {
-                                          Fluttertoast.showToast(
-                                              msg:
-                                                  "Failed to copy: ${e.toString()}");
-                                        }
-                                      },
-                                      icon: Icon(Icons.download,
-                                          color: Colors.black),
-                                      label: Text(
-                                        'Download',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ],
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            viewModel.qrData,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14),
+                                          ),
+                                        ],
+                                      )),
                                 ),
                               ],
                             ),
@@ -360,20 +329,36 @@ class GeneratorView extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                            IconButton(
-                                              icon: Icon(Icons.delete),
-                                              onPressed: () {
-                                                _showConfirmationModal(
-                                                    context, 'delete', () {
-                                                  viewModel.removeQRCode(index);
-                                                  if (viewModel.qrData ==
-                                                      qrData) {
-                                                    viewModel.qrData = '';
-                                                  }
-                                                  Fluttertoast.showToast(
-                                                      msg: "QR Code deleted!");
-                                                });
-                                              },
+                                            SizedBox(
+                                              width: 30,
+                                              child: IconButton(
+                                                icon: Icon(
+                                                  Icons.qr_code,
+                                                  color: Color(0xFF212023),
+                                                ),
+                                                onPressed: () {
+                                                  viewModel.setQRData(index);
+                                                },
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              child: IconButton(
+                                                icon: Icon(Icons.delete),
+                                                onPressed: () {
+                                                  _showConfirmationModal(
+                                                      context, 'delete', () {
+                                                    viewModel
+                                                        .removeQRCode(index);
+                                                    if (viewModel.qrData ==
+                                                        qrData) {
+                                                      viewModel.qrData = '';
+                                                    }
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "QR Code deleted!");
+                                                  });
+                                                },
+                                              ),
                                             ),
                                           ],
                                         ),
