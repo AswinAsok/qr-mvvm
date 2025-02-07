@@ -135,6 +135,26 @@ class GeneratorView extends StatelessWidget {
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
+                                    SizedBox(width: 10),
+                                    ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFFEBFF57),
+                                        foregroundColor: Colors.black,
+                                      ),
+                                      onPressed: () async {
+                                        await viewModel
+                                            .saveQRCode(viewModel.qrData);
+                                        Fluttertoast.showToast(
+                                            msg: "QR Code saved!");
+                                      },
+                                      icon:
+                                          Icon(Icons.save, color: Colors.black),
+                                      label: Text(
+                                        'Save',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ],

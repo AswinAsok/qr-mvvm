@@ -9,6 +9,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(ScanResultAdapter());
   await Hive.openBox<ScanResult>('scanResults');
+  await Hive.openBox<String>('generatedQRCodes');
   runApp(MyApp());
 }
 
