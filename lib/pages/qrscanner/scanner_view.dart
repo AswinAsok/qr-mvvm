@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
-import 'package:qrmvvm/pages/qrgenerator.dart/generator_view.dart';
 import 'package:qrmvvm/pages/qrscanner/scanner_view_model.dart';
 import 'package:qrmvvm/pages/qrscanner/qr_scanner_corner.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:go_router/go_router.dart';
 
 class ScannerView extends StatelessWidget {
   const ScannerView({super.key});
@@ -17,12 +17,39 @@ class ScannerView extends StatelessWidget {
       create: (_) => ScannerViewModel(),
       child: Consumer<ScannerViewModel>(builder: (context, viewModel, child) {
         return Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 80,
+            title: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                'QR Scanner',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            backgroundColor: Color(0xFF212023),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: IconButton(
+                  icon: Icon(Icons.star_outline_rounded),
+                  color: Colors.white,
+                  hoverColor: Color(0xFFEBFF57),
+                  onPressed: () {
+                    // Handle about icon press
+                  },
+                ),
+              ),
+            ],
+          ),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Scanner(viewModel: viewModel),
                     SizedBox(height: 20),
@@ -85,12 +112,7 @@ class GenerateButton extends StatelessWidget {
               backgroundColor: Color(0xFFEBFF57),
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => GeneratorView(),
-                ),
-              );
+              context.go('/generator');
             },
             label: Text("Generate",
                 style: TextStyle(
