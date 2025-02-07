@@ -121,25 +121,23 @@ class GeneratorView extends StatelessWidget {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize
+                          .min, // Important: constrains Column's size
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              'QR Generator',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(width: 40),
-                          ],
+                        Text(
+                          'QR Generator',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         if (viewModel.qrData.isNotEmpty) ...[
                           SizedBox(height: 20),
                           Center(
                             child: Column(
+                              mainAxisSize:
+                                  MainAxisSize.min, // Constrains inner Column
                               children: [
                                 Container(
                                   padding: EdgeInsets.all(5),
@@ -171,25 +169,28 @@ class GeneratorView extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 20),
-                                Expanded(
-                                  child: Container(
-                                      margin: EdgeInsets.only(bottom: 10),
-                                      padding:
-                                          EdgeInsets.fromLTRB(20, 10, 10, 10),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white10,
-                                        borderRadius: BorderRadius.circular(10),
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white10,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        // Wrap text in Expanded
+                                        child: Text(
+                                          viewModel.qrData,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14),
+                                          overflow: TextOverflow
+                                              .ellipsis, // Handle long text
+                                        ),
                                       ),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            viewModel.qrData,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14),
-                                          ),
-                                        ],
-                                      )),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
