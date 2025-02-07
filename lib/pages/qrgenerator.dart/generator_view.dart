@@ -5,9 +5,49 @@ import 'generator_view_model.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:lottie/lottie.dart';
+import 'dart:async';
 
-class GeneratorView extends StatelessWidget {
+class GeneratorView extends StatefulWidget {
   const GeneratorView({super.key});
+
+  @override
+  _GeneratorViewState createState() => _GeneratorViewState();
+}
+
+class _GeneratorViewState extends State<GeneratorView> {
+  bool _showLottie = true;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+      setState(() {
+        _showLottie = !_showLottie;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  Future<int> _fetchGitHubStars() async {
+    final response = await http
+        .get(Uri.parse('https://api.github.com/repos/AswinAsok/qr-mvvm'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['stargazers_count'];
+    } else {
+      throw Exception('Failed to load stars');
+    }
+  }
 
   void _showConfirmationModal(
       BuildContext context, String action, VoidCallback onConfirm) {
@@ -96,6 +136,58 @@ class GeneratorView extends StatelessWidget {
       create: (_) => GeneratorViewModel(),
       child: Consumer<GeneratorViewModel>(builder: (context, viewModel, child) {
         return Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 80,
+            title: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                'QR Generator',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            backgroundColor: Color(0xFF212023),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: FutureBuilder<int>(
+                    future: _fetchGitHubStars(),
+                    builder: (context, snapshot) {
+                      if (snapshot.data != null) {
+                        return GestureDetector(
+                          onTap: () async {
+                            const url = 'https://github.com/AswinAsok/qr-mvvm';
+                            final Uri uri = Uri.parse(url);
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(uri);
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          },
+                          child: Row(
+                            children: [
+                              _showLottie
+                                  ? Lottie.asset('assets/wink.json', width: 24)
+                                  : Icon(Icons.star_half_outlined,
+                                      color: Color.fromARGB(255, 235, 255, 87)),
+                              SizedBox(width: 2),
+                              Text(
+                                '${snapshot.data} stars',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
+                    }),
+              ),
+            ],
+          ),
           body: Stack(
             children: [
               Column(
@@ -103,7 +195,7 @@ class GeneratorView extends StatelessWidget {
                   Container(
                     width: double.maxFinite,
                     padding: EdgeInsets.only(
-                        top: 60, bottom: 20, left: 20, right: 20),
+                        top: 0, bottom: 10, left: 20, right: 20),
                     decoration: BoxDecoration(
                       color: Color(0xFF212023),
                       borderRadius: BorderRadiusDirectional.only(
@@ -124,16 +216,7 @@ class GeneratorView extends StatelessWidget {
                       mainAxisSize: MainAxisSize
                           .min, // Important: constrains Column's size
                       children: [
-                        Text(
-                          'QR Generator',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                         if (viewModel.qrData.isNotEmpty) ...[
-                          SizedBox(height: 25),
                           Center(
                             child: Column(
                               mainAxisSize:
@@ -199,13 +282,13 @@ class GeneratorView extends StatelessWidget {
                             Icon(
                               Icons.qr_code_scanner_rounded,
                               color: Color(0xFF212023),
-                              size: 24,
+                              size: 20,
                             ),
                             SizedBox(width: 10),
                             Text(
                               "Scan QR",
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: 15,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -219,11 +302,16 @@ class GeneratorView extends StatelessWidget {
                           onPressed: () {
                             context.go('/');
                           },
-                          label: Text("Scan Now",
-                              style: TextStyle(
-                                  color: Color(0xFF212023),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold)),
+                          icon: Icon(Icons.qr_code,
+                              color: Colors.black, size: 20),
+                          label: Text(
+                            "Scan Now",
+                            style: TextStyle(
+                              color: Color(0xFF212023),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -232,7 +320,7 @@ class GeneratorView extends StatelessWidget {
                   Expanded(
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 10),
-                      padding: EdgeInsets.all(20),
+                      padding: EdgeInsets.all(15),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -259,7 +347,7 @@ class GeneratorView extends StatelessWidget {
                                     ? "Generated QRs (${viewModel.generatedQRCodes.length})"
                                     : "Generated QRs",
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -281,7 +369,7 @@ class GeneratorView extends StatelessWidget {
                                   child: Text(
                                     "Clear All",
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -301,86 +389,112 @@ class GeneratorView extends StatelessWidget {
                                           viewModel.generatedQRCodes[index];
                                       return GestureDetector(
                                         onTap: () {
-                                          viewModel.setQRData(index);
+                                          if (viewModel.qrData == qrCode.data) {
+                                            viewModel.qrData = '';
+                                          } else {
+                                            viewModel.setQRData(index);
+                                          }
                                         },
-                                        child: ListTile(
-                                          contentPadding: EdgeInsets.symmetric(
-                                            vertical: 5,
-                                            horizontal: 0,
-                                          ),
-                                          title: Row(
-                                            children: [
-                                              Expanded(
-                                                child: SingleChildScrollView(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.symmetric(
+                                                  vertical: 5),
+                                              decoration: BoxDecoration(
+                                                color: viewModel.qrData ==
+                                                        qrCode.data
+                                                    ? Colors.yellow[100]
+                                                    : Colors.grey[100],
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: ListTile(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                  vertical: 5,
+                                                  horizontal: 10,
+                                                ),
+                                                title: SingleChildScrollView(
                                                   scrollDirection:
                                                       Axis.horizontal,
-                                                  child: Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 15,
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.grey[100],
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                    child: Text(
-                                                      qrCode.data,
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color:
-                                                              Colors.black45),
-                                                    ),
+                                                  child: Text(
+                                                    qrCode.data,
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.black45),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                child: IconButton(
-                                                  icon: Icon(
-                                                    viewModel.qrData ==
-                                                            qrCode.data
-                                                        ? Icons.visibility
-                                                        : Icons.qr_code,
-                                                    color: Color(0xFF212023),
-                                                  ),
-                                                  onPressed: () {
-                                                    viewModel.setQRData(index);
-                                                  },
+                                                trailing: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    IconButton(
+                                                      icon: Icon(
+                                                        viewModel.qrData ==
+                                                                qrCode.data
+                                                            ? Icons.visibility
+                                                            : Icons.qr_code,
+                                                        color:
+                                                            Color(0xFF212023),
+                                                        size: 20,
+                                                      ),
+                                                      onPressed: () {
+                                                        if (viewModel.qrData ==
+                                                            qrCode.data) {
+                                                          viewModel.qrData = '';
+                                                        } else {
+                                                          viewModel
+                                                              .setQRData(index);
+                                                        }
+                                                      },
+                                                    ),
+                                                    IconButton(
+                                                      icon: Icon(
+                                                        Icons.delete,
+                                                        size: 20,
+                                                      ),
+                                                      onPressed: () {
+                                                        _showConfirmationModal(
+                                                            context, 'delete',
+                                                            () {
+                                                          viewModel
+                                                              .removeQRCode(
+                                                                  index);
+                                                          if (viewModel
+                                                                  .qrData ==
+                                                              qrCode.data) {
+                                                            viewModel.qrData =
+                                                                '';
+                                                          }
+                                                          Fluttertoast.showToast(
+                                                              msg:
+                                                                  "QR Code deleted!");
+                                                        });
+                                                      },
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                child: IconButton(
-                                                  icon: Icon(Icons.delete),
-                                                  onPressed: () {
-                                                    _showConfirmationModal(
-                                                        context, 'delete', () {
-                                                      viewModel
-                                                          .removeQRCode(index);
-                                                      if (viewModel.qrData ==
-                                                          qrCode.data) {
-                                                        viewModel.qrData = '';
-                                                      }
-                                                      Fluttertoast.showToast(
-                                                          msg:
-                                                              "QR Code deleted!");
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          subtitle: Text(
-                                            DateFormat('d MMM, yyyy - hh:mm a')
-                                                .format(qrCode.date),
-                                            style: TextStyle(
-                                              color: Colors.grey[600],
-                                              fontSize: 12,
                                             ),
-                                          ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 15),
+                                              child: Text(
+                                                DateFormat(
+                                                        'd MMM, yyyy - hh:mm a')
+                                                    .format(qrCode.date),
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       );
                                     },
@@ -452,7 +566,8 @@ class GeneratorView extends StatelessWidget {
                             foregroundColor: Color(0xFF212023),
                           ),
                           onPressed: () => viewModel.generateQRCode(),
-                          icon: Icon(Icons.qr_code, color: Colors.black),
+                          icon: Icon(Icons.qr_code,
+                              color: Colors.black, size: 20),
                           label: Text(
                             'Generate',
                             style: TextStyle(fontWeight: FontWeight.bold),

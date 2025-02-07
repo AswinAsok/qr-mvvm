@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
@@ -11,9 +13,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
-class ScannerView extends StatelessWidget {
+class ScannerView extends StatefulWidget {
   const ScannerView({super.key});
 
+  @override
+  State<ScannerView> createState() => _ScannerViewState();
+}
+
+class _ScannerViewState extends State<ScannerView> {
   Future<int> _fetchGitHubStars() async {
     final response = await http
         .get(Uri.parse('https://api.github.com/repos/AswinAsok/qr-mvvm'));
@@ -23,6 +30,25 @@ class ScannerView extends StatelessWidget {
     } else {
       throw Exception('Failed to load stars');
     }
+  }
+
+  bool _showLottie = true;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+      setState(() {
+        _showLottie = !_showLottie;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -49,16 +75,9 @@ class ScannerView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: FutureBuilder<int>(
-                  future: _fetchGitHubStars(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: Colors.white),
-                      );
-                    } else {
-                      if (snapshot.hasData && snapshot.data! >= 0) {
+                    future: _fetchGitHubStars(),
+                    builder: (context, snapshot) {
+                      if (snapshot.data != null) {
                         return GestureDetector(
                           onTap: () async {
                             const url = 'https://github.com/AswinAsok/qr-mvvm';
@@ -71,8 +90,10 @@ class ScannerView extends StatelessWidget {
                           },
                           child: Row(
                             children: [
-                              Icon(Icons.star_half_outlined,
-                                  color: Color.fromARGB(255, 235, 255, 87)),
+                              _showLottie
+                                  ? Lottie.asset('assets/wink.json', width: 24)
+                                  : Icon(Icons.star_half_outlined,
+                                      color: Color.fromARGB(255, 235, 255, 87)),
                               SizedBox(width: 2),
                               Text(
                                 '${snapshot.data} stars',
@@ -84,9 +105,7 @@ class ScannerView extends StatelessWidget {
                       } else {
                         return SizedBox.shrink();
                       }
-                    }
-                  },
-                ),
+                    }),
               ),
             ],
           ),
