@@ -142,12 +142,15 @@ class _GeneratorViewState extends State<GeneratorView> {
             toolbarHeight: 80,
             title: Padding(
               padding: const EdgeInsets.all(10),
-              child: Text(
-                'QR Generator',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+              child: Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Text(
+                  'QR Generator',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -158,15 +161,7 @@ class _GeneratorViewState extends State<GeneratorView> {
                 child: FutureBuilder<int>(
                   future: _fetchGitHubStars(),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: Colors.white),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Icon(Icons.error, color: Colors.white);
-                    } else {
+                    if (snapshot.data != null) {
                       return GestureDetector(
                         onTap: () async {
                           const url = 'https://github.com/AswinAsok/qr-mvvm';
@@ -177,20 +172,25 @@ class _GeneratorViewState extends State<GeneratorView> {
                             throw 'Could not launch $url';
                           }
                         },
-                        child: Row(
-                          children: [
-                            _showLottie
-                                ? Lottie.asset('assets/wink.json', width: 24)
-                                : Icon(Icons.star_half_outlined,
-                                    color: Color.fromARGB(255, 235, 255, 87)),
-                            SizedBox(width: 2),
-                            Text(
-                              '${snapshot.data} stars',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
+                        child: Container(
+                          margin: EdgeInsets.only(top: 10),
+                          child: Row(
+                            children: [
+                              _showLottie
+                                  ? Lottie.asset('assets/wink.json', width: 24)
+                                  : Icon(Icons.star_half_outlined,
+                                      color: Color.fromARGB(255, 235, 255, 87)),
+                              SizedBox(width: 2),
+                              Text(
+                                '${snapshot.data} stars',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
                         ),
                       );
+                    } else {
+                      return SizedBox.shrink();
                     }
                   },
                 ),
@@ -297,7 +297,7 @@ class _GeneratorViewState extends State<GeneratorView> {
                             Text(
                               "Scan QR",
                               style: TextStyle(
-                                fontSize: 15,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -311,8 +311,6 @@ class _GeneratorViewState extends State<GeneratorView> {
                           onPressed: () {
                             context.go('/');
                           },
-                          icon: Icon(Icons.qr_code,
-                              color: Colors.black, size: 20),
                           label: Text(
                             "Scan Now",
                             style: TextStyle(
@@ -573,7 +571,11 @@ class _GeneratorViewState extends State<GeneratorView> {
                             backgroundColor: Color(0xFFEBFF57),
                             foregroundColor: Color(0xFF212023),
                           ),
-                          onPressed: () => viewModel.generateQRCode(),
+                          onPressed: () {
+                            viewModel.generateQRCode();
+                            FocusScope.of(context)
+                                .unfocus(); // automatically hide keyboard
+                          },
                           icon: Icon(Icons.qr_code,
                               color: Colors.black, size: 20),
                           label: Text(
