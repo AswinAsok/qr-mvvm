@@ -687,20 +687,17 @@ class RecentScans extends StatelessWidget {
                           contentPadding:
                               EdgeInsets.symmetric(vertical: 5, horizontal: 0),
                           title: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 5,
                             children: [
                               Expanded(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 15),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[100],
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 15),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
                                     child: Text(
                                       scan.result,
                                       style: TextStyle(
@@ -713,7 +710,7 @@ class RecentScans extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                width: 24,
+                                width: 36,
                                 child: IconButton(
                                   icon: Icon(Icons.copy),
                                   onPressed: () {
@@ -727,7 +724,7 @@ class RecentScans extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                width: 24,
+                                width: 36,
                                 child: IconButton(
                                   icon: Icon(Icons.delete),
                                   onPressed: () {

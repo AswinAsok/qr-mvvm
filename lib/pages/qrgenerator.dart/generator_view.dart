@@ -40,11 +40,13 @@ class _GeneratorViewState extends State<GeneratorView> {
 
   Future<int> _fetchGitHubStars() async {
     final response = await http
-        .get(Uri.parse('https://api.github.com/repos/AswinAsok/qr-mvvm'));
+        .get(Uri.parse('https://api.github.com/repos/AswinAsok/QRApp'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      print("Stars: ${data['stargazers_count']}");
       return data['stargazers_count'];
     } else {
+      print("Failed to load stars: ${response.statusCode}");
       throw Exception('Failed to load stars');
     }
   }
@@ -154,37 +156,44 @@ class _GeneratorViewState extends State<GeneratorView> {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: FutureBuilder<int>(
-                    future: _fetchGitHubStars(),
-                    builder: (context, snapshot) {
-                      if (snapshot.data != null) {
-                        return GestureDetector(
-                          onTap: () async {
-                            const url = 'https://github.com/AswinAsok/qr-mvvm';
-                            final Uri uri = Uri.parse(url);
-                            if (await canLaunchUrl(uri)) {
-                              await launchUrl(uri);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
-                          },
-                          child: Row(
-                            children: [
-                              _showLottie
-                                  ? Lottie.asset('assets/wink.json', width: 24)
-                                  : Icon(Icons.star_half_outlined,
-                                      color: Color.fromARGB(255, 235, 255, 87)),
-                              SizedBox(width: 2),
-                              Text(
-                                '${snapshot.data} stars',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        return SizedBox.shrink();
-                      }
-                    }),
+                  future: _fetchGitHubStars(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(color: Colors.white),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Icon(Icons.error, color: Colors.white);
+                    } else {
+                      return GestureDetector(
+                        onTap: () async {
+                          const url = 'https://github.com/AswinAsok/qr-mvvm';
+                          final Uri uri = Uri.parse(url);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            _showLottie
+                                ? Lottie.asset('assets/wink.json', width: 24)
+                                : Icon(Icons.star_half_outlined,
+                                    color: Color.fromARGB(255, 235, 255, 87)),
+                            SizedBox(width: 2),
+                            Text(
+                              '${snapshot.data} stars',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
             ],
           ),
@@ -399,49 +408,55 @@ class _GeneratorViewState extends State<GeneratorView> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Container(
-                                              margin: EdgeInsets.symmetric(
-                                                  vertical: 5),
-                                              decoration: BoxDecoration(
-                                                color: viewModel.qrData ==
-                                                        qrCode.data
-                                                    ? Colors.yellow[100]
-                                                    : Colors.grey[100],
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: ListTile(
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                  vertical: 5,
-                                                  horizontal: 10,
-                                                ),
-                                                title: SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  child: Text(
-                                                    qrCode.data,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: Colors.black45),
-                                                  ),
-                                                ),
-                                                trailing: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    IconButton(
-                                                      icon: Icon(
-                                                        viewModel.qrData ==
-                                                                qrCode.data
-                                                            ? Icons.visibility
-                                                            : Icons.qr_code,
-                                                        color:
-                                                            Color(0xFF212023),
-                                                        size: 20,
+                                            ListTile(
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      vertical: 5,
+                                                      horizontal: 0),
+                                              title: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10,
+                                                              horizontal: 15),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey[100],
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
                                                       ),
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        child: Text(
+                                                          qrCode.data,
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: Colors
+                                                                  .black45),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    child: IconButton(
+                                                      icon: Icon(
+                                                          viewModel.qrData ==
+                                                                  qrCode.data
+                                                              ? Icons.visibility
+                                                              : Icons.qr_code),
                                                       onPressed: () {
                                                         if (viewModel.qrData ==
                                                             qrCode.data) {
@@ -452,11 +467,10 @@ class _GeneratorViewState extends State<GeneratorView> {
                                                         }
                                                       },
                                                     ),
-                                                    IconButton(
-                                                      icon: Icon(
-                                                        Icons.delete,
-                                                        size: 20,
-                                                      ),
+                                                  ),
+                                                  SizedBox(
+                                                    child: IconButton(
+                                                      icon: Icon(Icons.delete),
                                                       onPressed: () {
                                                         _showConfirmationModal(
                                                             context, 'delete',
@@ -476,22 +490,16 @@ class _GeneratorViewState extends State<GeneratorView> {
                                                         });
                                                       },
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 15),
-                                              child: Text(
+                                              subtitle: Text(
                                                 DateFormat(
                                                         'd MMM, yyyy - hh:mm a')
                                                     .format(qrCode.date),
                                                 style: TextStyle(
-                                                  color: Colors.grey[600],
-                                                  fontSize: 12,
-                                                ),
+                                                    color: Colors.grey[600],
+                                                    fontSize: 12),
                                               ),
                                             ),
                                           ],
