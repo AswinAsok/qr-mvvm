@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:qrmvvm/pages/qrscanner/scan_result.dart';
 
 class ScannerViewModel extends ChangeNotifier {
   bool _isScannerVisible = false;
   final List<ScanResult> _recentScans = [];
   List<ScanResult> _filteredScans = [];
+  final Box<ScanResult> _scanBox = Hive.box<ScanResult>('scanResults');
 
   bool get isScannerVisible => _isScannerVisible;
   List<ScanResult> get recentScans {
@@ -15,7 +17,13 @@ class ScannerViewModel extends ChangeNotifier {
   }
 
   ScannerViewModel() {
+    _loadScans();
+  }
+
+  void _loadScans() {
+    _recentScans.addAll(_scanBox.values);
     _filteredScans = _recentScans;
+    notifyListeners();
   }
 
   void toggleScannerVisibility() {
@@ -24,7 +32,9 @@ class ScannerViewModel extends ChangeNotifier {
   }
 
   void addScanResult(String result) {
-    _recentScans.add(ScanResult(result: result, createdAt: DateTime.now()));
+    final scanResult = ScanResult(result: result, createdAt: DateTime.now());
+    _recentScans.add(scanResult);
+    _scanBox.add(scanResult);
     _isScannerVisible = false;
     notifyListeners();
   }
@@ -32,6 +42,7 @@ class ScannerViewModel extends ChangeNotifier {
   void clearScans() {
     _recentScans.clear();
     _filteredScans.clear();
+    _scanBox.clear();
     notifyListeners();
   }
 
@@ -48,6 +59,7 @@ class ScannerViewModel extends ChangeNotifier {
   }
 
   void removeScanResult(int index) {
+    _scanBox.deleteAt(index);
     _recentScans.removeAt(index);
     notifyListeners();
   }
