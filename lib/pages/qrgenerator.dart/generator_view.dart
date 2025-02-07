@@ -133,7 +133,7 @@ class GeneratorView extends StatelessWidget {
                           ),
                         ),
                         if (viewModel.qrData.isNotEmpty) ...[
-                          SizedBox(height: 20),
+                          SizedBox(height: 25),
                           Center(
                             child: Column(
                               mainAxisSize:
@@ -150,7 +150,7 @@ class GeneratorView extends StatelessWidget {
                                     child: QrImageView(
                                       data: viewModel.qrData,
                                       version: QrVersions.auto,
-                                      size: 150.0,
+                                      size: 160.0,
                                       backgroundColor: Colors.white,
                                       errorStateBuilder: (context, error) {
                                         WidgetsBinding.instance
@@ -169,29 +169,6 @@ class GeneratorView extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 20),
-                                Container(
-                                  margin: EdgeInsets.only(bottom: 10),
-                                  padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white10,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        // Wrap text in Expanded
-                                        child: Text(
-                                          viewModel.qrData,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14),
-                                          overflow: TextOverflow
-                                              .ellipsis, // Handle long text
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -311,7 +288,6 @@ class GeneratorView extends StatelessWidget {
                                 ),
                             ],
                           ),
-                          SizedBox(height: 10),
                           Expanded(
                             child: viewModel.generatedQRCodes.isNotEmpty
                                 ? ListView.builder(
@@ -323,78 +299,86 @@ class GeneratorView extends StatelessWidget {
                                     itemBuilder: (context, index) {
                                       final qrData =
                                           viewModel.generatedQRCodes[index];
-                                      return ListTile(
-                                        contentPadding: EdgeInsets.symmetric(
-                                          vertical: 5,
-                                          horizontal: 0,
-                                        ),
-                                        title: Row(
-                                          children: [
-                                            Expanded(
-                                              child: SingleChildScrollView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                    vertical: 10,
-                                                    horizontal: 15,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.grey[100],
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: Text(
-                                                    qrData,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: Colors.black45),
+                                      return GestureDetector(
+                                        onTap: () {
+                                          viewModel.setQRData(index);
+                                        },
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.symmetric(
+                                            vertical: 5,
+                                            horizontal: 0,
+                                          ),
+                                          title: Row(
+                                            children: [
+                                              Expanded(
+                                                child: SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  child: Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 15,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.grey[100],
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    child: Text(
+                                                      qrData,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color:
+                                                              Colors.black45),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              width: 30,
-                                              child: IconButton(
-                                                icon: Icon(
-                                                  Icons.qr_code,
-                                                  color: Color(0xFF212023),
+                                              SizedBox(
+                                                child: IconButton(
+                                                  icon: Icon(
+                                                    viewModel.qrData == qrData
+                                                        ? Icons.visibility
+                                                        : Icons.qr_code,
+                                                    color: Color(0xFF212023),
+                                                  ),
+                                                  onPressed: () {
+                                                    viewModel.setQRData(index);
+                                                  },
                                                 ),
-                                                onPressed: () {
-                                                  viewModel.setQRData(index);
-                                                },
                                               ),
-                                            ),
-                                            SizedBox(
-                                              child: IconButton(
-                                                icon: Icon(Icons.delete),
-                                                onPressed: () {
-                                                  _showConfirmationModal(
-                                                      context, 'delete', () {
-                                                    viewModel
-                                                        .removeQRCode(index);
-                                                    if (viewModel.qrData ==
-                                                        qrData) {
-                                                      viewModel.qrData = '';
-                                                    }
-                                                    Fluttertoast.showToast(
-                                                        msg:
-                                                            "QR Code deleted!");
-                                                  });
-                                                },
+                                              SizedBox(
+                                                child: IconButton(
+                                                  icon: Icon(Icons.delete),
+                                                  onPressed: () {
+                                                    _showConfirmationModal(
+                                                        context, 'delete', () {
+                                                      viewModel
+                                                          .removeQRCode(index);
+                                                      if (viewModel.qrData ==
+                                                          qrData) {
+                                                        viewModel.qrData = '';
+                                                      }
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "QR Code deleted!");
+                                                    });
+                                                  },
+                                                ),
                                               ),
+                                            ],
+                                          ),
+                                          subtitle: Text(
+                                            DateFormat('d MMM, yyyy - hh:mm a')
+                                                .format(DateTime.now()),
+                                            style: TextStyle(
+                                              color: Colors.grey[600],
+                                              fontSize: 12,
                                             ),
-                                          ],
-                                        ),
-                                        subtitle: Text(
-                                          DateFormat('d MMM, yyyy - hh:mm a')
-                                              .format(DateTime.now()),
-                                          style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 12,
                                           ),
                                         ),
                                       );
