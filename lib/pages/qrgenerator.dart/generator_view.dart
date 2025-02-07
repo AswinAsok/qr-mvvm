@@ -107,10 +107,6 @@ class GeneratorView extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            IconButton(
-                              icon: Icon(Icons.arrow_back, color: Colors.white),
-                              onPressed: () => Navigator.pop(context),
-                            ),
                             Text(
                               'QR Generator',
                               style: TextStyle(

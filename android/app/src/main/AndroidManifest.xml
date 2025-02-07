@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="qrmvvm"
+        android:label="QR Scanner"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/qr_lauchner">
         <activity
             android:name=".MainActivity"
             android:exported="true"
