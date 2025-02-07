@@ -57,31 +57,33 @@ class ScannerView extends StatelessWidget {
                         height: 20,
                         child: CircularProgressIndicator(color: Colors.white),
                       );
-                    } else if (snapshot.hasError) {
-                      return Icon(Icons.error, color: Colors.white);
                     } else {
-                      return GestureDetector(
-                        onTap: () async {
-                          const url = 'https://github.com/AswinAsok/qr-mvvm';
-                          final Uri uri = Uri.parse(url);
-                          if (await canLaunchUrl(uri)) {
-                            await launchUrl(uri);
-                          } else {
-                            throw 'Could not launch $url';
-                          }
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.star_half_outlined,
-                                color: Color.fromARGB(255, 235, 255, 87)),
-                            SizedBox(width: 2),
-                            Text(
-                              '${snapshot.data} stars',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      );
+                      if (snapshot.hasData && snapshot.data! >= 0) {
+                        return GestureDetector(
+                          onTap: () async {
+                            const url = 'https://github.com/AswinAsok/qr-mvvm';
+                            final Uri uri = Uri.parse(url);
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(uri);
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.star_half_outlined,
+                                  color: Color.fromARGB(255, 235, 255, 87)),
+                              SizedBox(width: 2),
+                              Text(
+                                '${snapshot.data} stars',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
                     }
                   },
                 ),
