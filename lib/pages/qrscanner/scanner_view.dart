@@ -351,6 +351,10 @@ class _ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Container(
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width,
+                    maxWidth: MediaQuery.of(context).size.width * 2,
+                  ),
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
@@ -361,6 +365,7 @@ class _ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                     style: TextStyle(
                       fontSize: 16,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
@@ -376,6 +381,7 @@ class _ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Copied to clipboard')),
                   );
+                  Navigator.pop(context);
                 },
                 icon: Icon(Icons.copy, color: Colors.white),
                 label: Text("Copy", style: TextStyle(color: Colors.white)),
