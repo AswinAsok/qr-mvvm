@@ -424,7 +424,15 @@ class _GeneratorViewState extends State<GeneratorView> {
                                                               vertical: 10,
                                                               horizontal: 15),
                                                       decoration: BoxDecoration(
-                                                        color: Colors.grey[100],
+                                                        color: viewModel
+                                                                    .qrData ==
+                                                                qrCode.data
+                                                            ? Color.fromARGB(
+                                                                144,
+                                                                235,
+                                                                255,
+                                                                87)
+                                                            : Colors.grey[100],
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10),
