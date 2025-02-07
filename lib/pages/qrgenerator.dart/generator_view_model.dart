@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
+import 'package:qrmvvm/pages/qrscanner/scan_result.dart';
 
 class GeneratorViewModel extends ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   String qrData = '';
   List<String> generatedQRCodes = [];
+  final Box<String> _qrBox = Hive.box<String>('generatedQRCodes');
+
+  GeneratorViewModel() {
+    _loadQRCodes();
+  }
 
   void generateQRCode() {
     qrData = textController.text;
     if (qrData.isNotEmpty) {
-      generatedQRCodes.add(qrData);
+      saveQRCode(qrData);
       textController.clear(); // Clear the input field
-      notifyListeners();
     }
   }
 
@@ -22,12 +28,25 @@ class GeneratorViewModel extends ChangeNotifier {
   }
 
   void removeQRCode(int index) {
+    _qrBox.deleteAt(index);
     generatedQRCodes.removeAt(index);
     notifyListeners();
   }
 
   void clearQRCodes() {
+    _qrBox.clear();
     generatedQRCodes.clear();
+    notifyListeners();
+  }
+
+  void _loadQRCodes() {
+    generatedQRCodes.addAll(_qrBox.values);
+    notifyListeners();
+  }
+
+  Future<void> saveQRCode(String qrData) async {
+    await _qrBox.add(qrData);
+    generatedQRCodes.add(qrData);
     notifyListeners();
   }
 }
