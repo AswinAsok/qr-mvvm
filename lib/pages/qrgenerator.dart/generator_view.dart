@@ -69,6 +69,26 @@ class GeneratorView extends StatelessWidget {
     );
   }
 
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey globalKey = GlobalKey();
@@ -134,6 +154,19 @@ class GeneratorView extends StatelessWidget {
                                       version: QrVersions.auto,
                                       size: 150.0,
                                       backgroundColor: Colors.white,
+                                      errorStateBuilder: (context, error) {
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) {
+                                          _showErrorDialog(context,
+                                              'Failed to generate QR code.');
+                                        });
+                                        return Center(
+                                          child: Text(
+                                            'Error',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),

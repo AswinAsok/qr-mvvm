@@ -2,7 +2,7 @@
     <application
         android:label="QR Scanner"
         android:name="${applicationName}"
-        android:icon="@mipmap/qr_lauchner">
+        android:icon="@mipmap/qr_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"

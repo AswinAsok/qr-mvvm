@@ -9,6 +9,7 @@ import 'package:lottie/lottie.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class ScannerView extends StatelessWidget {
   const ScannerView({super.key});
@@ -59,16 +60,27 @@ class ScannerView extends StatelessWidget {
                     } else if (snapshot.hasError) {
                       return Icon(Icons.error, color: Colors.white);
                     } else {
-                      return Row(
-                        children: [
-                          Icon(Icons.star_half_outlined,
-                              color: Color.fromARGB(255, 235, 255, 87)),
-                          SizedBox(width: 2),
-                          Text(
-                            '${snapshot.data} stars',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
+                      return GestureDetector(
+                        onTap: () async {
+                          const url = 'https://github.com/AswinAsok/qr-mvvm';
+                          final Uri uri = Uri.parse(url);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.star_half_outlined,
+                                color: Color.fromARGB(255, 235, 255, 87)),
+                            SizedBox(width: 2),
+                            Text(
+                              '${snapshot.data} stars',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
                       );
                     }
                   },

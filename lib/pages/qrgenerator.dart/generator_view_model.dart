@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
-import 'package:qrmvvm/pages/qrscanner/scan_result.dart';
 
 class GeneratorViewModel extends ChangeNotifier {
   final TextEditingController textController = TextEditingController();
