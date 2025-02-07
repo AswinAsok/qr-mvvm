@@ -252,6 +252,77 @@ class _ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  void _showScanResult(String result) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Scan Result',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.close,
+                      color: Color(0xFF212023),
+                      size: 24,
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 10),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    result,
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Color(0xFF212023),
+                  minimumSize: Size(double.infinity, 50),
+                ),
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: result));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Copied to clipboard')),
+                  );
+                },
+                icon: Icon(Icons.copy, color: Colors.white),
+                label: Text("Copy", style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -337,6 +408,7 @@ class _ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                                                   '';
                                               widget.viewModel
                                                   .addScanResult(result);
+                                              _showScanResult(result);
                                             },
                                           ),
                                         ),
