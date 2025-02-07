@@ -297,7 +297,7 @@ class GeneratorView extends StatelessWidget {
                                         bottom:
                                             80), // Add padding for the overlay
                                     itemBuilder: (context, index) {
-                                      final qrData =
+                                      final qrCode =
                                           viewModel.generatedQRCodes[index];
                                       return GestureDetector(
                                         onTap: () {
@@ -327,7 +327,7 @@ class GeneratorView extends StatelessWidget {
                                                               10),
                                                     ),
                                                     child: Text(
-                                                      qrData,
+                                                      qrCode.data,
                                                       style: TextStyle(
                                                           fontSize: 14,
                                                           fontWeight:
@@ -341,7 +341,8 @@ class GeneratorView extends StatelessWidget {
                                               SizedBox(
                                                 child: IconButton(
                                                   icon: Icon(
-                                                    viewModel.qrData == qrData
+                                                    viewModel.qrData ==
+                                                            qrCode.data
                                                         ? Icons.visibility
                                                         : Icons.qr_code,
                                                     color: Color(0xFF212023),
@@ -360,7 +361,7 @@ class GeneratorView extends StatelessWidget {
                                                       viewModel
                                                           .removeQRCode(index);
                                                       if (viewModel.qrData ==
-                                                          qrData) {
+                                                          qrCode.data) {
                                                         viewModel.qrData = '';
                                                       }
                                                       Fluttertoast.showToast(
@@ -374,7 +375,7 @@ class GeneratorView extends StatelessWidget {
                                           ),
                                           subtitle: Text(
                                             DateFormat('d MMM, yyyy - hh:mm a')
-                                                .format(DateTime.now()),
+                                                .format(qrCode.date),
                                             style: TextStyle(
                                               color: Colors.grey[600],
                                               fontSize: 12,
