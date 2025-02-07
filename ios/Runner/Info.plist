@@ -51,7 +51,7 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>qr_lauchner</string>
+				<string>qr_launcher</string>
 			</array>
 		</dict>
 	</dict>
