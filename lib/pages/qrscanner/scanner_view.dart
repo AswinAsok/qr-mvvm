@@ -362,20 +362,17 @@ class _ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Icon(
-                                              Icons.touch_app_outlined,
+                                              Icons.qr_code_scanner,
                                               color: Colors.white,
                                               size: 40,
                                             ),
-                                            SizedBox(height: 8),
-                                            FadeTransition(
-                                              opacity: _animation,
-                                              child: Text(
-                                                "Tap to Scan",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
+                                            SizedBox(height: 15),
+                                            Text(
+                                              "Tap to Scan",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400,
                                               ),
                                             ),
                                           ],
@@ -422,7 +419,7 @@ void _showConfirmationDialog(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Confirm Deletion",
+              "Confirm Deletion?",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             Text(
@@ -567,9 +564,9 @@ class RecentScans extends StatelessWidget {
                                     child: Text(
                                       scan.result,
                                       style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black45),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
