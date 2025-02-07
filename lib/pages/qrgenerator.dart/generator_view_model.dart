@@ -18,6 +18,8 @@ class GeneratorViewModel extends ChangeNotifier {
     if (qrData.isNotEmpty) {
       saveQRCode(qrData);
       textController.clear(); // Clear the input field
+      SystemChannels.textInput
+          .invokeMethod('TextInput.hide'); // Close the keyboard
     }
   }
 
@@ -28,6 +30,10 @@ class GeneratorViewModel extends ChangeNotifier {
   }
 
   void removeQRCode(int index) {
+    if (qrData == generatedQRCodes[index]) {
+      qrData = '';
+    }
+
     _qrBox.deleteAt(index);
     generatedQRCodes.removeAt(index);
     notifyListeners();
@@ -35,6 +41,7 @@ class GeneratorViewModel extends ChangeNotifier {
 
   void clearQRCodes() {
     _qrBox.clear();
+    qrData = '';
     generatedQRCodes.clear();
     notifyListeners();
   }

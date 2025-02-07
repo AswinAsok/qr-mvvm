@@ -48,6 +48,7 @@ class GeneratorView extends StatelessWidget {
                       onPressed: () {
                         onConfirm();
                         Navigator.of(context).pop();
+                        FocusScope.of(context).unfocus(); // Remove focus
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Color(0xFF212023),
@@ -143,8 +144,7 @@ class GeneratorView extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 10),
-                                SizedBox(height: 10),
+                                SizedBox(height: 20),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -366,6 +366,10 @@ class GeneratorView extends StatelessWidget {
                                                 _showConfirmationModal(
                                                     context, 'delete', () {
                                                   viewModel.removeQRCode(index);
+                                                  if (viewModel.qrData ==
+                                                      qrData) {
+                                                    viewModel.qrData = '';
+                                                  }
                                                   Fluttertoast.showToast(
                                                       msg: "QR Code deleted!");
                                                 });

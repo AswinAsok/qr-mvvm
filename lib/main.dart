@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
       title: 'QR MVVM',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Satoshi',
       ),
     );
   }

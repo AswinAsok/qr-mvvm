@@ -621,7 +621,7 @@ class RecentScans extends StatelessWidget {
                         "Wow, such emptiness.\n Maybe try scanning a QR code?",
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w300,
                           color: Color(0xFF212023),
                         ),
                         textAlign: TextAlign.center,
