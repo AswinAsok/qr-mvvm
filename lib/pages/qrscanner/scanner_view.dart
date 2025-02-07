@@ -7,9 +7,22 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class ScannerView extends StatelessWidget {
   const ScannerView({super.key});
+
+  Future<int> _fetchGitHubStars() async {
+    final response = await http
+        .get(Uri.parse('https://api.github.com/repos/AswinAsok/qr-mvvm'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['stargazers_count'];
+    } else {
+      throw Exception('Failed to load stars');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +46,31 @@ class ScannerView extends StatelessWidget {
             backgroundColor: Color(0xFF212023),
             actions: [
               Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: IconButton(
-                  icon: Icon(Icons.star_outline_rounded),
-                  color: Colors.white,
-                  hoverColor: Color(0xFFEBFF57),
-                  onPressed: () {
-                    // Handle about icon press
+                padding: const EdgeInsets.all(20.0),
+                child: FutureBuilder<int>(
+                  future: _fetchGitHubStars(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(color: Colors.white),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Icon(Icons.error, color: Colors.white);
+                    } else {
+                      return Row(
+                        children: [
+                          Icon(Icons.star_half_outlined,
+                              color: Color.fromARGB(255, 235, 255, 87)),
+                          SizedBox(width: 2),
+                          Text(
+                            '${snapshot.data} stars',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      );
+                    }
                   },
                 ),
               ),
