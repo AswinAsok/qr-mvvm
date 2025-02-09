@@ -1,6 +1,6 @@
 {
-    "name": "qrmvvm",
-    "short_name": "qrmvvm",
+    "name": "makemyqr",
+    "short_name": "makemyqr",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

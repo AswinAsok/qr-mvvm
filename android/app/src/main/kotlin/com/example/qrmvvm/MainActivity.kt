@@ -1,4 +1,4 @@
-package com.example.qrmvvm
+package com.example.makemyqr
 
 import io.flutter.embedding.android.FlutterActivity
 

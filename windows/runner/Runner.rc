@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "qrmvvm" "\0"
+            VALUE "FileDescription", "makemyqr" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "qrmvvm" "\0"
+            VALUE "InternalName", "makemyqr" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "qrmvvm.exe" "\0"
-            VALUE "ProductName", "qrmvvm" "\0"
+            VALUE "OriginalFilename", "makemyqr.exe" "\0"
+            VALUE "ProductName", "makemyqr" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:qrmvvm/pages/qrscanner/scan_result.dart';
+import 'package:makemyqr/pages/qrscanner/scan_result.dart';
 
 class ScannerViewModel extends ChangeNotifier {
   bool _isScannerVisible = false;

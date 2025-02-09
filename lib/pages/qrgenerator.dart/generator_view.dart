@@ -40,7 +40,7 @@ class _GeneratorViewState extends State<GeneratorView> {
 
   Future<int> _fetchGitHubStars() async {
     final response = await http
-        .get(Uri.parse('https://api.github.com/repos/AswinAsok/QRApp'));
+        .get(Uri.parse('https://api.github.com/repos/AswinAsok/qr-mvvm'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       print("Stars: ${data['stargazers_count']}");
